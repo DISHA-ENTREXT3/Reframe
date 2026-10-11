@@ -1,5 +1,54 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-export const Route = createFileRoute("/privacy")({head:()=>({meta:[{title:"Privacy notice — Reframe Studios"},{name:"description",content:"How Reframe Studios handles information submitted through its inquiry form."},{property:"og:title",content:"Reframe Studios privacy notice"},{property:"og:description",content:"Information about your inquiry data and privacy."},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary"}]}),component:Privacy});
-function Privacy(){return <><SiteHeader/><main className="container privacy-page"><span className="eyebrow">REFRAME STUDIOS</span><h1>Privacy notice.</h1><p>This notice covers information you share through this website’s contact form.</p><h2>Information you share</h2><p>We collect your name, work email, firm, role, selected area of interest and any message you choose to provide.</p><h2>How it is used</h2><p>Your information is stored privately using Lovable Cloud and used to review and respond to your inquiry. It is not displayed publicly or sold. Submitting an inquiry does not subscribe you to marketing emails.</p><h2>Keep confidential information private</h2><p>Please do not submit confidential investment information, sensitive personal details or information you are not authorised to share.</p><h2>Your choices</h2><p>You can request access, correction or deletion of your inquiry by contacting Reframe through the contact form and identifying your earlier inquiry. Additional business-specific retention and contact details will be confirmed before public launch.</p></main><SiteFooter/></>}
+export const Route = createFileRoute("/privacy")({
+  head: () => ({
+    meta: [
+      { title: "Privacy notice — Reframe Studios" },
+      {
+        name: "description",
+        content: "How Reframe Studios handles information submitted through its inquiry form.",
+      },
+      { property: "og:title", content: "Reframe Studios privacy notice" },
+      { property: "og:description", content: "Information about your inquiry data and privacy." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
+  component: Privacy,
+});
+function Privacy() {
+  return (
+    <>
+      <SiteHeader />
+      <main className="container privacy-page">
+        <span className="eyebrow">REFRAME STUDIOS</span>
+        <h1>Privacy notice.</h1>
+        <p>This notice covers information you share through this website’s contact form.</p>
+        <h2>Information you share</h2>
+        <p>
+          We collect your name, work email, firm, role, selected area of interest and any message
+          you choose to provide.
+        </p>
+        <h2>How it is used</h2>
+        <p>
+          Your information is stored privately using Lovable Cloud and used to review and respond to
+          your inquiry. It is not displayed publicly or sold. Submitting an inquiry does not
+          subscribe you to marketing emails.
+        </p>
+        <h2>Keep confidential information private</h2>
+        <p>
+          Please do not submit confidential investment information, sensitive personal details or
+          information you are not authorised to share.
+        </p>
+        <h2>Your choices</h2>
+        <p>
+          You can request access, correction or deletion of your inquiry by contacting Reframe
+          through the contact form and identifying your earlier inquiry. Additional
+          business-specific retention and contact details will be confirmed before public launch.
+        </p>
+      </main>
+      <SiteFooter />
+    </>
+  );
+}

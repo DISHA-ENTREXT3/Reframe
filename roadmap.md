@@ -1,4 +1,5 @@
 # Reframe Studios
+
 - [x] Build editorial homepage sections with accessible mobile navigation; label work concepts as illustrative.
 - [x] Build contact and privacy pages with validated, privately stored inquiries.
 - [x] Verify navigation, inquiry submission, and desktop/mobile presentation.

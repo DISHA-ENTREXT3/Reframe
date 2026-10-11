@@ -7,19 +7,221 @@ import { SiteFooter } from "@/components/site-footer";
 import { Button } from "@/components/ui/button";
 import { contactSchema } from "@/lib/contact-schema";
 import { submitInquiry } from "@/lib/contact.functions";
-export const Route = createFileRoute("/contact")({ head: () => ({meta: [{title:"Talk to Reframe Studios — Start a conversation"},{name:"description",content:"Tell Reframe Studios about your firm and the investment stories you want to share."},{property:"og:title",content:"Start a conversation with Reframe Studios"},{property:"og:description",content:"Let’s put your investment thinking into words, stories and film."},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"}]}), component:Contact });
+export const Route = createFileRoute("/contact")({
+  head: () => ({
+    meta: [
+      { title: "Talk to Reframe Studios — Start a conversation" },
+      {
+        name: "description",
+        content:
+          "Tell Reframe Studios about your firm and the investment stories you want to share.",
+      },
+      { property: "og:title", content: "Start a conversation with Reframe Studios" },
+      {
+        property: "og:description",
+        content: "Let’s put your investment thinking into words, stories and film.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: Contact,
+});
 function Contact() {
- const submit = useServerFn(submitInquiry);
- const [errors, setErrors] = useState<Record<string,string>>({});
- const [pending, setPending] = useState(false);
- const [success, setSuccess] = useState(false);
- async function onSubmit(event: FormEvent<HTMLFormElement>) {
-  event.preventDefault();
-  const form = new FormData(event.currentTarget);
-  const result = contactSchema.safeParse({...Object.fromEntries(form),consent:form.get("consent")==="on"});
-  if(!result.success) { const next:Record<string,string>={}; for(const issue of result.error.issues) next[String(issue.path[0])]=issue.message; setErrors(next); return; }
-  setErrors({});setPending(true);
-  try {const response = await submit({data:result.data}); if(response.success)setSuccess(true); else setErrors({submit:response.error??"Please try again."});} catch {setErrors({submit:"We couldn’t save your inquiry. Your details are still here — please try again."});} finally {setPending(false);}
- }
- return <><SiteHeader/><main className="container contact-page"><div className="contact-intro"><span className="eyebrow">A GOOD STORY STARTS HERE</span><h1>Let’s find<br /><em>your perspective.</em></h1><p>Tell us a little about your firm.<br />We’ll start with a conversation, not a content calendar.</p><div className="contact-note"><span className="mini-line"/>PRIVATE MARKETS. HUMAN STORIES.</div></div>{success?<div className="contact-success" role="status"><Check size={32}/><h2>Conversation started.</h2><p>Thank you. Your inquiry has been securely saved for Reframe Studios.</p><Link to="/" className="text-link">Back to the studio <ArrowUpRight size={18}/></Link></div>:<form className="contact-form" onSubmit={onSubmit} noValidate><div className="form-grid">{[{name:"name",label:"Your name",placeholder:"Full name",type:"text",autocomplete:"name",max:100},{name:"email",label:"Work email",placeholder:"you@yourfirm.com",type:"email",autocomplete:"email",max:255},{name:"firm",label:"Firm",placeholder:"Your firm’s name",type:"text",autocomplete:"organization",max:150},{name:"role",label:"Your role",placeholder:"Your role at the firm",type:"text",autocomplete:"organization-title",max:100}].map(field=><div className="form-field" key={field.name}><label htmlFor={field.name}>{field.label} <span>*</span></label><input id={field.name} name={field.name} type={field.type} autoComplete={field.autocomplete} maxLength={field.max} placeholder={field.placeholder} required aria-invalid={!!errors[field.name]} aria-describedby={errors[field.name]?`${field.name}-error`:undefined}/>{errors[field.name]&&<span className="field-error" id={`${field.name}-error`}>{errors[field.name]}</span>}</div>)}</div><div className="form-field"><label htmlFor="service">What would you like help with? <span>*</span></label><select id="service" name="service" defaultValue="Not sure yet">{["Not sure yet","Partner-led content","Portfolio storytelling","Content repurposing","Video & YouTube","Executive positioning"].map(value=><option key={value}>{value}</option>)}</select></div><div className="form-field"><label htmlFor="message">Anything else on your mind? <span className="optional">Optional</span></label><textarea id="message" name="message" rows={4} maxLength={3000} placeholder="Your goals, an idea, or a story you’d like to tell…"/></div><div className="honeypot" aria-hidden="true"><label htmlFor="website">Website</label><input id="website" name="website" tabIndex={-1} autoComplete="off" defaultValue=""/></div><label className="consent-label"><input type="checkbox" name="consent" aria-describedby={errors["consent"]?"consent-error":undefined}/><span>I agree that Reframe Studios may use these details to respond to my inquiry, as described in the <Link to="/privacy">privacy notice</Link>.</span></label>{errors["consent"]&&<p id="consent-error" className="field-error">{errors["consent"]}</p>}{errors["submit"]&&<p role="alert" className="field-error">{errors["submit"]}</p>}<Button variant="editorial" type="submit" disabled={pending}>{pending?<><LoaderCircle className="animate-spin"/>Sending your inquiry</>:<>Start the conversation <ArrowUpRight/></>}</Button><p className="form-footnote">Your details stay private. Please don’t include confidential investment information.</p></form>}</main><SiteFooter/></>;
+  const submit = useServerFn(submitInquiry);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [pending, setPending] = useState(false);
+  const [success, setSuccess] = useState(false);
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const result = contactSchema.safeParse({
+      ...Object.fromEntries(form),
+      consent: form.get("consent") === "on",
+    });
+    if (!result.success) {
+      const next: Record<string, string> = {};
+      for (const issue of result.error.issues) next[String(issue.path[0])] = issue.message;
+      setErrors(next);
+      return;
+    }
+    setErrors({});
+    setPending(true);
+    try {
+      const response = await submit({ data: result.data });
+      if (response.success) setSuccess(true);
+      else setErrors({ submit: response.error ?? "Please try again." });
+    } catch {
+      setErrors({
+        submit: "We couldn’t save your inquiry. Your details are still here — please try again.",
+      });
+    } finally {
+      setPending(false);
+    }
+  }
+  return (
+    <>
+      <SiteHeader />
+      <main className="container contact-page">
+        <div className="contact-intro">
+          <span className="eyebrow">A GOOD STORY STARTS HERE</span>
+          <h1>
+            Let’s find
+            <br />
+            <em>your perspective.</em>
+          </h1>
+          <p>
+            Tell us a little about your firm.
+            <br />
+            We’ll start with a conversation, not a content calendar.
+          </p>
+          <div className="contact-note">
+            <span className="mini-line" />
+            PRIVATE MARKETS. HUMAN STORIES.
+          </div>
+        </div>
+        {success ? (
+          <div className="contact-success" role="status">
+            <Check size={32} />
+            <h2>Conversation started.</h2>
+            <p>Thank you. Your inquiry has been securely saved for Reframe Studios.</p>
+            <Link to="/" className="text-link">
+              Back to the studio <ArrowUpRight size={18} />
+            </Link>
+          </div>
+        ) : (
+          <form className="contact-form" onSubmit={onSubmit} noValidate>
+            <div className="form-grid">
+              {[
+                {
+                  name: "name",
+                  label: "Your name",
+                  placeholder: "Full name",
+                  type: "text",
+                  autocomplete: "name",
+                  max: 100,
+                },
+                {
+                  name: "email",
+                  label: "Work email",
+                  placeholder: "you@yourfirm.com",
+                  type: "email",
+                  autocomplete: "email",
+                  max: 255,
+                },
+                {
+                  name: "firm",
+                  label: "Firm",
+                  placeholder: "Your firm’s name",
+                  type: "text",
+                  autocomplete: "organization",
+                  max: 150,
+                },
+                {
+                  name: "role",
+                  label: "Your role",
+                  placeholder: "Your role at the firm",
+                  type: "text",
+                  autocomplete: "organization-title",
+                  max: 100,
+                },
+              ].map((field) => (
+                <div className="form-field" key={field.name}>
+                  <label htmlFor={field.name}>
+                    {field.label} <span>*</span>
+                  </label>
+                  <input
+                    id={field.name}
+                    name={field.name}
+                    type={field.type}
+                    autoComplete={field.autocomplete}
+                    maxLength={field.max}
+                    placeholder={field.placeholder}
+                    required
+                    aria-invalid={!!errors[field.name]}
+                    aria-describedby={errors[field.name] ? `${field.name}-error` : undefined}
+                  />
+                  {errors[field.name] && (
+                    <span className="field-error" id={`${field.name}-error`}>
+                      {errors[field.name]}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="form-field">
+              <label htmlFor="service">
+                What would you like help with? <span>*</span>
+              </label>
+              <select id="service" name="service" defaultValue="Not sure yet">
+                {[
+                  "Not sure yet",
+                  "Partner-led content",
+                  "Portfolio storytelling",
+                  "Content repurposing",
+                  "Video & YouTube",
+                  "Executive positioning",
+                ].map((value) => (
+                  <option key={value}>{value}</option>
+                ))}
+              </select>
+            </div>
+            <div className="form-field">
+              <label htmlFor="message">
+                Anything else on your mind? <span className="optional">Optional</span>
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                rows={4}
+                maxLength={3000}
+                placeholder="Your goals, an idea, or a story you’d like to tell…"
+              />
+            </div>
+            <div className="honeypot" aria-hidden="true">
+              <label htmlFor="website">Website</label>
+              <input id="website" name="website" tabIndex={-1} autoComplete="off" defaultValue="" />
+            </div>
+            <label className="consent-label">
+              <input
+                type="checkbox"
+                name="consent"
+                aria-describedby={errors["consent"] ? "consent-error" : undefined}
+              />
+              <span>
+                I agree that Reframe Studios may use these details to respond to my inquiry, as
+                described in the <Link to="/privacy">privacy notice</Link>.
+              </span>
+            </label>
+            {errors["consent"] && (
+              <p id="consent-error" className="field-error">
+                {errors["consent"]}
+              </p>
+            )}
+            {errors["submit"] && (
+              <p role="alert" className="field-error">
+                {errors["submit"]}
+              </p>
+            )}
+            <Button variant="editorial" type="submit" disabled={pending}>
+              {pending ? (
+                <>
+                  <LoaderCircle className="animate-spin" />
+                  Sending your inquiry
+                </>
+              ) : (
+                <>
+                  Start the conversation <ArrowUpRight />
+                </>
+              )}
+            </Button>
+            <p className="form-footnote">
+              Your details stay private. Please don’t include confidential investment information.
+            </p>
+          </form>
+        )}
+      </main>
+      <SiteFooter />
+    </>
+  );
 }
